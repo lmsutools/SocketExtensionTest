@@ -1,0 +1,20 @@
+<clientExtension\background.js></clientExtension\background.js>
+
+<clientExtension\js\popup.js>const socket=io("http://localhost:3000");socket.on("message",e=>{var o=document.getElementById("message-list"),t=document.createElement("li");t.textContent=e,o.appendChild(t),console.log("Received message from server: "+e)}),socket.on("connect",()=>{console.log("Connected to server.")});</clientExtension\js\popup.js>
+
+<clientExtension\js\socket.io-import.js>import io from"./socket.io.min.js";export{io};</clientExtension\js\socket.io-import.js>
+
+<clientExtension\manifest.json>{"manifest_version":3,"name":"Testing Socket.io Client","version":"1.0","action":{"default_popup":"popup.html"},"content_scripts":[{"matches":["<all_urls>"],"js":["js/socket.io.min.js"],"run_at":"document_end"}]}</clientExtension\manifest.json>
+
+<clientExtension\popup.html><!DOCTYPE html><html><head><title>Testing Socket.io</title></head><body><ul id="message-list"></ul><script src="js/socket.io.min.js"></script><script src="js/popup.js"></script></body></html></clientExtension\popup.html>
+
+<server\package.json>{"name":"server","version":"1.0.0","description":"","main":"index.js","scripts":{"test":"echo \"Error: no test specified\" && exit 1"},"keywords":[],"author":"","license":"ISC","dependencies":{"cors":"^2.8.5","express":"^4.18.2","socket.io":"^4.6.1"}}</server\package.json>
+
+<server\server.js>const express=require("express"),app=express(),server=require("http").createServer(app),io=require("socket.io")(server,{cors:{origin:"http://localhost:3000",methods:["GET","POST"]}});io.on("connection",o=>{console.log("User connected: "+o.id),o.on("message",e=>{console.log(`Received message from user ${o.id}: `+e),o.broadcast.emit("message",e)}),o.on("disconnect",()=>{console.log("User disconnected: "+o.id)})}),server.listen(3e3,()=>{console.log("Server listening on port 3000")});</server\server.js>
+
+<serverExtension\js\popup.js>const socket=io("http://localhost:3000"),sendButton=document.getElementById("send-btn");sendButton.addEventListener("click",()=>{var e=document.getElementById("message-input"),t=e.value;socket.emit("message",t),e.value=""}),socket.on("connect",()=>{console.log("Connected to server.")}),socket.on("message",e=>{console.log("Server message: "+e)});</serverExtension\js\popup.js>
+
+<serverExtension\manifest.json>{"manifest_version":3,"name":"Testing Socket.io Server","version":"1.0","action":{"default_popup":"popup.html"},"content_scripts":[{"matches":["<all_urls>"],"js":["js/socket.io.min.js"],"run_at":"document_start"}]}</serverExtension\manifest.json>
+
+<serverExtension\popup.html><!DOCTYPE html><html><head><title>Testing Socket.io</title></head><body><input type="text" id="message-input" placeholder="Enter message to send"> <button id="send-btn">Send Message to Server</button><script src="js/socket.io.min.js"></script><script src="js/popup.js"></script></body></html></serverExtension\popup.html>
+

@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Testing Socket.io Server",
+  "version": "1.0",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["js/socket.io.min.js"],
+    "run_at": "document_start"
+  }]
+}
